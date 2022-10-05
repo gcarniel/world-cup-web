@@ -1,5 +1,5 @@
-import Icon from '~/components/Icon';
-import Input from '~/components/Input';
+import Icon from '../../components/Icon';
+import Input from '../../components/Icon'
 
 const Login = () => {
   return (
