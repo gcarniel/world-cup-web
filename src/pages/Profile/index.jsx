@@ -1,4 +1,5 @@
 import Card from '../../components/Card';
+import DateSelect from '../../components/DateSelect';
 import Icon from '../../components/Icon';
 
 const Profile = () => {
@@ -28,11 +29,7 @@ const Profile = () => {
         <section id="content" className="container max-w-3xl p-4 space-y-4 ">
           <h2 className="text-xl font-bold text-red-500 ">Seus palpites</h2>
 
-          <div className="p-4 flex items-center justify-center space-x-4 text-red-500">
-            <Icon name="arrowLeft" className="w-6 text-red-500" />
-            <span className="font-bold">{new Date().toDateString()}</span>
-            <Icon name="arrowRight" className="w-6 text-red-500" />
-          </div>
+          <DateSelect />
 
           <div className="space-y-4">
             <Card
