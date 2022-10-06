@@ -1,5 +1,5 @@
 import Icon from '../../components/Icon';
-import Input from '../../components/Icon'
+import Input from '../../components/Input';
 
 const Login = () => {
   return (
@@ -33,7 +33,10 @@ const Login = () => {
             placeholder="Digite sua senha"
           />
 
-          <a href='/dashboard' className="w-full text-white text-center bg-red-500 border border-white text-xl px-6 py-4 rounded-xl">
+          <a
+            href="/dashboard"
+            className="w-full text-white text-center bg-red-500 border border-white text-xl px-6 py-4 rounded-xl"
+          >
             Entrar
           </a>
         </form>

@@ -1,5 +1,5 @@
 import Icon from '../../components/Icon';
-import Input from '../../components/Icon'
+import Input from '../../components/Input';
 
 const Signup = () => {
   return (
@@ -46,7 +46,10 @@ const Signup = () => {
             placeholder="Digite sua senha"
           />
 
-          <a href='/dashboard' className="block w-full text-white text-center bg-red-500 border border-white text-xl px-6 py-4 rounded-xl">
+          <a
+            href="/dashboard"
+            className="block w-full text-white text-center bg-red-500 border border-white text-xl px-6 py-4 rounded-xl"
+          >
             Criar minha conta
           </a>
         </form>
