@@ -1,11 +1,30 @@
+import axios from 'axios';
+import { format, formatISO } from 'date-fns';
+import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useLocalStorage } from 'react-use';
+import { useAsyncFn, useLocalStorage } from 'react-use';
 import Card from '../../components/Card';
 import DateSelect from '../../components/DateSelect';
 import Icon from '../../components/Icon';
 
 const Dashboard = () => {
+  const dateIso = formatISO(new Date(2022, 10, 20));
+  const [selectedDate, setSelectedDate] = useState(dateIso);
   const [auth] = useLocalStorage('auth');
+  const [state, doFetch] = useAsyncFn(async (params) => {
+    const resp = await axios({
+      method: 'GET',
+      baseURL: 'http://localhost:3000',
+      url: '/games',
+      params,
+    });
+
+    return resp.data;
+  });
+
+  useEffect(() => {
+    doFetch({ gameTime: selectedDate });
+  }, [selectedDate]);
 
   if (!auth?.user?.id) {
     return <Navigate to="/" replace={true} />;
@@ -35,24 +54,26 @@ const Dashboard = () => {
         </section>
 
         <section id="content" className="container max-w-3xl p-4 space-y-4 ">
-          <DateSelect />
+          <DateSelect date={selectedDate} onChange={setSelectedDate} />
 
           <div className="space-y-4">
-            <Card
-              teamA={{ slug: 'sui' }}
-              teamB={{ slug: 'cam' }}
-              match={{ time: '7:00' }}
-            />
-            <Card
-              teamA={{ slug: 'uru' }}
-              teamB={{ slug: 'cor' }}
-              match={{ time: '9:00' }}
-            />
-            <Card
-              teamA={{ slug: 'por' }}
-              teamB={{ slug: 'gan' }}
-              match={{ time: '11:00' }}
-            />
+            {state.loading && 'Carregando jogos...'}
+            {state.error && 'Algo inesperado aconteceu.'}
+
+            {!state.loading &&
+              !state.error &&
+              state.value?.map((game) => {
+                console.log(game);
+                return (
+                  <Card
+                    key={game.id}
+                    gameId={game.id}
+                    homeTeam={game.homeTeam}
+                    awayTeam={game.awayTeam}
+                    gameTime={format(new Date(game.gameTime), 'H:mm')}
+                  />
+                );
+              })}
           </div>
         </section>
       </main>
