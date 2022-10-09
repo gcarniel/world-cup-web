@@ -99,6 +99,13 @@ const Login = () => {
               'Entrar'
             )}
           </button>
+
+          <a
+            href="/signup"
+            className="block text-red-500 text-center text-xl px-8 py-4 rounded-xl border border-red-500"
+          >
+            Criar minha conta
+          </a>
         </form>
       </main>
     </div>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { SpinnerGap } from 'phosphor-react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import * as yup from 'yup';
 
@@ -20,6 +20,7 @@ const validationSchema = yup.object().shape({
 
 const Signup = () => {
   const [auth, setAuth] = useLocalStorage('auth', {});
+  const navigate = useNavigate();
 
   const createUser = async (values) => {
     try {
@@ -29,6 +30,9 @@ const Signup = () => {
         url: '/users',
         data: values,
       });
+
+      setAuth({ user: response.data });
+      navigate('/dashboard');
     } catch (error) {
       console.error(error);
     }
