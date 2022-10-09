@@ -8,13 +8,21 @@ const validationSchema = yup.object().shape({
   awayTeamScore: yup.string().required(),
 });
 
-const Card = ({ homeTeam, awayTeam, gameTime, gameId }) => {
+const Card = ({
+  homeTeam,
+  awayTeam,
+  gameTime,
+  gameId,
+  homeTeamScore = '',
+  awayTeamScore = '',
+  disabled,
+}) => {
   const [auth] = useLocalStorage('auth');
   const formik = useFormik({
     onSubmit: (values) => {
       axios({
         method: 'POST',
-        baseURL: 'http://localhost:3000',
+        baseURL: import.meta.env.VITE_API_URL,
         url: '/hunches',
         headers: {
           authorization: `Bearer ${auth.accessToken}`,
@@ -26,8 +34,8 @@ const Card = ({ homeTeam, awayTeam, gameTime, gameId }) => {
       });
     },
     initialValues: {
-      homeTeamScore: '',
-      awayTeamScore: '',
+      homeTeamScore,
+      awayTeamScore,
     },
     validationSchema,
   });
@@ -41,10 +49,11 @@ const Card = ({ homeTeam, awayTeam, gameTime, gameId }) => {
         <span className="uppercase">{homeTeam}</span>
         <img src={`/imgs/flags/${homeTeam}.png`} />
         <input
-          type="number"
-          className="bg-red-50 w-[55px] h-[55px] text-red-700 text-xl rounded-md text-center"
+          type={disabled ? 'text' : 'number'}
+          className="disabled:rounded-full bg-red-100 w-[55px] h-[55px] text-red-700 text-xl rounded-md text-center"
           min={0}
           name="homeTeamScore"
+          disabled={disabled}
           value={formik.values.homeTeamScore}
           onChange={formik.handleChange}
           onBlur={formik.handleSubmit}
@@ -53,10 +62,11 @@ const Card = ({ homeTeam, awayTeam, gameTime, gameId }) => {
         <span className="text-red-500 font-bold">X</span>
 
         <input
-          type="number"
-          className="bg-red-50 w-[55px] h-[55px] text-red-700 text-xl rounded-md text-center"
+          type={disabled ? 'text' : 'number'}
+          className="disabled:rounded-full bg-red-100 w-[55px] h-[55px] text-red-700 text-xl rounded-md text-center"
           min={0}
           name="awayTeamScore"
+          disabled={disabled}
           value={formik.values.awayTeamScore}
           onChange={formik.handleChange}
           onBlur={formik.handleSubmit}

@@ -25,7 +25,7 @@ const Signup = () => {
     try {
       const response = await axios({
         method: 'POST',
-        baseURL: 'http://localhost:3000',
+        baseURL: import.meta.env.VITE_API_URL,
         url: '/users',
         data: values,
       });

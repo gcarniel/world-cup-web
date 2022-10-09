@@ -11,10 +11,26 @@ const Dashboard = () => {
   const dateIso = formatISO(new Date(2022, 10, 20));
   const [selectedDate, setSelectedDate] = useState(dateIso);
   const [auth] = useLocalStorage('auth');
-  const [state, doFetch] = useAsyncFn(async (params) => {
+
+  const [hunches, doFetchHunches] = useAsyncFn(async () => {
     const resp = await axios({
       method: 'GET',
-      baseURL: 'http://localhost:3000',
+      baseURL: import.meta.env.VITE_API_URL,
+      url: `${auth.user.username}`,
+    });
+
+    const hunchesMap = resp?.data?.hunches?.reduce((acc, hunch) => {
+      acc[hunch.gameId] = hunch;
+      return acc;
+    }, {});
+
+    return hunchesMap;
+  });
+
+  const [games, doFetchGames] = useAsyncFn(async (params) => {
+    const resp = await axios({
+      method: 'GET',
+      baseURL: import.meta.env.VITE_API_URL,
       url: '/games',
       params,
     });
@@ -22,8 +38,12 @@ const Dashboard = () => {
     return resp.data;
   });
 
+  const isLoading = hunches.loading || games.loading;
+  const hasError = hunches.error || games.error;
+
   useEffect(() => {
-    doFetch({ gameTime: selectedDate });
+    doFetchGames({ gameTime: selectedDate });
+    doFetchHunches();
   }, [selectedDate]);
 
   if (!auth?.user?.id) {
@@ -39,7 +59,7 @@ const Dashboard = () => {
             src="/imgs/logo-fundo-vermelho.svg"
             alt="logo"
           />
-          <a href="/profile">
+          <a href={`/${auth?.user?.username}`}>
             <Icon name="profile" className="w-10" />
           </a>
         </div>
@@ -48,7 +68,7 @@ const Dashboard = () => {
       <main className="space-y-4">
         <section id="header" className="bg-red-500 text-white">
           <div className="container max-w-3xl space-y-2 p-2">
-            <span>Olá, Dunha</span>
+            <span>Olá, {auth.user.name}</span>
             <h3 className="text-2xl font-bold">Qual é o seu palpite?</h3>
           </div>
         </section>
@@ -57,13 +77,12 @@ const Dashboard = () => {
           <DateSelect date={selectedDate} onChange={setSelectedDate} />
 
           <div className="space-y-4">
-            {state.loading && 'Carregando jogos...'}
-            {state.error && 'Algo inesperado aconteceu.'}
+            {isLoading && 'Carregando jogos...'}
+            {hasError && 'Algo inesperado aconteceu.'}
 
-            {!state.loading &&
-              !state.error &&
-              state.value?.map((game) => {
-                console.log(game);
+            {!isLoading &&
+              !hasError &&
+              games.value?.map((game) => {
                 return (
                   <Card
                     key={game.id}
@@ -71,6 +90,8 @@ const Dashboard = () => {
                     homeTeam={game.homeTeam}
                     awayTeam={game.awayTeam}
                     gameTime={format(new Date(game.gameTime), 'H:mm')}
+                    homeTeamScore={hunches.value?.[game.id]?.homeTeamScore}
+                    awayTeamScore={hunches.value?.[game.id]?.awayTeamScore}
                   />
                 );
               })}
