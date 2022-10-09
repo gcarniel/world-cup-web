@@ -1,8 +1,20 @@
+import { Navigate } from 'react-router-dom';
+import { useLocalStorage } from 'react-use';
 import Card from '../../components/Card';
 import DateSelect from '../../components/DateSelect';
 import Icon from '../../components/Icon';
 
 const Profile = () => {
+  const [auth, setAuth] = useLocalStorage('auth');
+
+  const handleLogout = () => {
+    setAuth({});
+  };
+
+  if (!auth?.user?.id) {
+    return <Navigate to="/" replace={true} />;
+  }
+
   return (
     <>
       <header className="bg-red-500 text-white p-4">
@@ -12,7 +24,10 @@ const Profile = () => {
             src="/imgs/logo-fundo-vermelho.svg"
             alt="logo"
           />
-          <Icon name="profile" className="w-10" />
+          {/* <Icon name="profile" className="w-10" /> */}
+          <div className="cursor-pointer" onClick={handleLogout}>
+            Sair
+          </div>
         </div>
       </header>
 

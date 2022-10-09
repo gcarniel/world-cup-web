@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { SpinnerGap } from 'phosphor-react';
+import { Navigate } from 'react-router-dom';
 import { useLocalStorage } from 'react-use';
 import * as yup from 'yup';
 
@@ -42,6 +43,10 @@ const Login = () => {
     },
     validationSchema,
   });
+
+  if (auth?.user?.id) {
+    return <Navigate to="/dashboard" replace={true} />;
+  }
 
   return (
     <div className="">

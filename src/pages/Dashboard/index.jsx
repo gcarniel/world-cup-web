@@ -1,8 +1,16 @@
+import { Navigate } from 'react-router-dom';
+import { useLocalStorage } from 'react-use';
 import Card from '../../components/Card';
 import DateSelect from '../../components/DateSelect';
 import Icon from '../../components/Icon';
 
 const Dashboard = () => {
+  const [auth] = useLocalStorage('auth');
+
+  if (!auth?.user?.id) {
+    return <Navigate to="/" replace={true} />;
+  }
+
   return (
     <>
       <header className="bg-red-500 text-white p-4">
