@@ -1,13 +1,12 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { SpinnerGap } from 'phosphor-react';
-import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 import Icon from '../../components/Icon';
 import Input from '../../components/Input';
 
-let validationSchema = yup.object().shape({
+const validationSchema = yup.object().shape({
   name: yup.string().required('Informe seu nome'),
   username: yup.string().required('Informe seu nome de usuário'),
   email: yup
@@ -18,8 +17,6 @@ let validationSchema = yup.object().shape({
 });
 
 const Signup = () => {
-  const navigate = useNavigate();
-
   const createUser = async (values) => {
     try {
       const response = await axios({
@@ -28,7 +25,6 @@ const Signup = () => {
         url: '/users',
         data: values,
       });
-      navigate('/dashboard');
     } catch (error) {
       console.error(error);
     }
@@ -66,8 +62,8 @@ const Signup = () => {
             type="text"
             name="name"
             label="Seu nome"
-            error={formik.touched.name && formik.errors.name}
             placeholder="Digite seu nome"
+            error={formik.touched.name && formik.errors.name}
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -77,8 +73,8 @@ const Signup = () => {
             type="text"
             name="username"
             label="Seu nome de usuário"
-            error={formik.touched.username && formik.errors.username}
             placeholder="Digite seu nome de usuário"
+            error={formik.touched.username && formik.errors.username}
             value={formik.values.username}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -87,8 +83,8 @@ const Signup = () => {
             type="text"
             name="email"
             label="Seu e-mail"
-            error={formik.touched.email && formik.errors.email}
             placeholder="Digite seu e-mail"
+            error={formik.touched.email && formik.errors.email}
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -98,15 +94,15 @@ const Signup = () => {
             type="password"
             name="password"
             label="Sua senha"
-            error={formik.touched.password && formik.errors.password}
             placeholder="Digite sua senha"
+            error={formik.touched.password && formik.errors.password}
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
 
           <button
-            disabled={!formik.isValid}
+            disabled={!formik.isValid || formik.isSubmitting}
             type="submit"
             className={`w-full text-white text-center bg-red-500 
                     border border-white text-xl px-6 py-4 rounded-xl
